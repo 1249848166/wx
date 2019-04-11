@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:background="@color/white"
+    android:padding="5dp"
+    android:layout_height="wrap_content"
+    tools:ignore="DisableBaselineAlignment">
+
+
+    <RelativeLayout
+        android:layout_width="50dp"
+        android:layout_height="50dp">
+
+        <ImageView
+            android:id="@+id/avatar"
+            android:padding="5dp"
+            android:scaleType="centerCrop"
+            android:layout_margin="5dp"
+            android:src="@drawable/head_hold"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/dot"
+            android:textStyle="bold"
+            android:text="0"
+            android:visibility="gone"
+            android:layout_alignParentRight="true"
+            android:textColor="@color/white"
+            android:background="@drawable/dot_red"
+            android:layout_width="25dp"
+            android:gravity="center"
+            android:textSize="10sp"
+            android:layout_height="15dp"
+            tools:ignore="HardcodedText,RtlHardcoded,SmallSp" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_marginLeft="5dp"
+        android:orientation="vertical"
+        android:layout_width="0px"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        tools:ignore="RtlHardcoded">
+
+        <TextView
+            android:id="@+id/title"
+            android:lines="1"
+            android:ellipsize="end"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:ignore="HardcodedText" />
+
+        <TextView
+            android:id="@+id/content"
+            android:lines="1"
+            android:ellipsize="end"
+            android:textSize="15sp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:ignore="HardcodedText" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:gravity="end"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:ignore="UseCompoundDrawables">
+
+        <TextView
+            android:id="@+id/time"
+            android:textSize="10sp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:ignore="HardcodedText,RtlHardcoded,SmallSp" />
+
+        <ImageView
+            android:id="@+id/alert"
+            android:src="@drawable/butixing"
+            android:visibility="gone"
+            android:layout_marginRight="15dp"
+            android:layout_width="10dp"
+            android:layout_height="30dp"
+            tools:ignore="ContentDescription,RtlHardcoded" />
+
+    </LinearLayout>
+
+</LinearLayout>

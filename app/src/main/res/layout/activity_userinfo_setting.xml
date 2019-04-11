@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.UserinfoSettingActivity">
+
+    <EditText
+        android:id="@+id/pwd"
+        android:hint="请输入原密码"
+        android:background="@drawable/round_input"
+        android:padding="10dp"
+        android:layout_marginLeft="10dp"
+        android:inputType="textPassword"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        android:id="@+id/new_pwd"
+        android:hint="请输入新密码"
+        android:background="@drawable/round_input"
+        android:padding="10dp"
+        android:inputType="textPassword"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        android:id="@+id/confirm_new_pwd"
+        android:hint="请确认新密码"
+        android:inputType="textPassword"
+        android:background="@drawable/round_input"
+        android:padding="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/change_pwd"
+        android:background="@color/green"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:textSize="17sp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="5dp"
+        android:text="修改密码"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        android:id="@+id/new_nickname"
+        android:hint="请输入新昵称"
+        android:background="@drawable/round_input"
+        android:padding="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/edit_nickname"
+        android:background="@color/green"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:textSize="17sp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="5dp"
+        android:text="修改昵称"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

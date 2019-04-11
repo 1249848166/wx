@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/silver"
+    tools:context=".activity.SearchUserActivity"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <android.support.v7.widget.Toolbar
+        app:contentInsetStart="0dp"
+        android:background="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:padding="5dp"
+                android:src="@drawable/wo_normal"
+                android:layout_width="30dp"
+                android:layout_height="30dp" />
+
+            <EditText
+                android:id="@+id/username"
+                android:background="@drawable/round_input"
+                android:layout_width="0dp"
+                android:paddingLeft="15dp"
+                android:layout_weight="1"
+                android:layout_margin="5dp"
+                android:layout_height="40dp" />
+
+            <Button
+                android:id="@+id/search"
+                android:text="搜索"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:background="@color/green"
+                android:layout_width="60dp"
+                android:layout_marginRight="5dp"
+                android:layout_height="30dp"
+                tools:ignore="HardcodedText" />
+
+        </LinearLayout>
+
+    </android.support.v7.widget.Toolbar>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp" />
+
+</LinearLayout>
