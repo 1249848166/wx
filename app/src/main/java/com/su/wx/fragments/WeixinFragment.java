@@ -14,6 +14,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVObject;
+import com.avos.avoscloud.GetCallback;
 import com.avos.avoscloud.im.v2.AVIMClient;
 import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.avos.avoscloud.im.v2.AVIMConversationsQuery;
@@ -81,21 +84,34 @@ public class WeixinFragment extends Fragment {
             adapter.setOnConverationSelectListener(new ConversationAdapter.OnConverationSelectListener() {
                 @Override
                 public void select(int index, final AVIMConversation conversation) {
+                    //获取最新会话判断隐私设置
                     conversation.fetchInfoInBackground(new AVIMConversationCallback() {
                         @Override
-                        public void done(AVIMException e) {//获取最新会话判断隐私设置
+                        public void done(AVIMException e) {
                             if(e==null){
-                                boolean privacy= (boolean) conversation.getAttribute("privacy");
-                                List<String> ids = new ArrayList<>(conversation.getMembers());
-                                if(privacy){
-                                    //前往验证密码界面
-                                    Intent intent = new Intent(getContext(), ConversationVerifyDeviceIdActivity.class);
-                                    intent.putStringArrayListExtra("ids", (ArrayList<String>) ids);
-                                    startActivity(intent);
-                                }else {
-                                    Intent intent = new Intent(getContext(), ChatActivity.class);
-                                    intent.putStringArrayListExtra("ids", (ArrayList<String>) ids);
-                                    startActivity(intent);
+                                String privacy= (String) conversation.getAttribute("privacy");
+                                final List<String> ids = new ArrayList<>(conversation.getMembers());
+                                try {
+                                    JSONObject jo=new JSONObject(privacy);
+                                    if(jo.has(WxUser.getCurrentUser().getUsername())){//设置过
+                                        boolean pr=jo.getBoolean(WxUser.getCurrentUser().getUsername());
+                                        if(pr){
+                                            //前往验证密码界面
+                                            Intent intent = new Intent(getContext(), ConversationVerifyDeviceIdActivity.class);
+                                            intent.putStringArrayListExtra("ids", (ArrayList<String>) ids);
+                                            startActivity(intent);
+                                        }else{
+                                            Intent intent = new Intent(getContext(), ChatActivity.class);
+                                            intent.putStringArrayListExtra("ids", (ArrayList<String>) ids);
+                                            startActivity(intent);
+                                        }
+                                    }else{
+                                        Intent intent = new Intent(getContext(), ChatActivity.class);
+                                        intent.putStringArrayListExtra("ids", (ArrayList<String>) ids);
+                                        startActivity(intent);
+                                    }
+                                } catch (JSONException e1) {
+                                    e1.printStackTrace();
                                 }
                             }else{
                                 Log.e("会话更新失败",e.toString());

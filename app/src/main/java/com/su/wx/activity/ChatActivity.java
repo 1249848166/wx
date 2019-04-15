@@ -51,6 +51,8 @@ import com.su.wx.utils.Storage;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -223,9 +225,18 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener {
                         @Override
                         public void done(AVIMException e) {
                             if(e==null){
-                                boolean privacy= (boolean) conversation.getAttribute("privacy");
-                                intent.putExtra("privacy",privacy);
-                                startActivity(intent);
+                                String privacy= (String) conversation.getAttribute("privacy");
+                                try {
+                                    JSONObject jo=new JSONObject(privacy);
+                                    boolean pr=false;
+                                    if(jo.has(WxUser.getCurrentUser().getUsername())){//有设置过
+                                        pr=jo.getBoolean(WxUser.getCurrentUser().getUsername());
+                                    }
+                                    intent.putExtra("privacy",pr);
+                                    startActivity(intent);
+                                } catch (JSONException e1) {
+                                    e1.printStackTrace();
+                                }
                             }else{
                                 Log.e("获取最新会话失败",e.toString());
                             }
@@ -281,7 +292,7 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener {
     private void createConversation(List<String> others, String name) {
         HashMap<String, Object> map = new HashMap<>();
         map.put("importance", true);
-        map.put("privacy",false);
+        map.put("privacy","{}");
         AVIMClient client = AVIMClient.getInstance(WxUser.getCurrentUser().getUsername());
         client.createConversation(others, name, map, false, true,
                 new AVIMConversationCreatedCallback() {

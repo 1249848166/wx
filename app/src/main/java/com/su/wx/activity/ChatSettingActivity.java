@@ -2,6 +2,7 @@ package com.su.wx.activity;
 
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,11 +20,11 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.alibaba.fastjson.JSONObject;
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.FindCallback;
+import com.avos.avoscloud.GetCallback;
 import com.avos.avoscloud.im.v2.AVIMClient;
 import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.avos.avoscloud.im.v2.AVIMConversationsQuery;
@@ -37,6 +38,9 @@ import com.su.wx.models.Friend;
 import com.su.wx.models.WxUser;
 import com.su.wx.utils.StatusBarUtil;
 import com.suke.widget.SwitchButton;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -74,34 +78,76 @@ public class ChatSettingActivity extends AppCompatActivity implements View.OnCli
             @Override
             public void onCheckedChanged(SwitchButton view, final boolean isChecked) {
                 if (WxUser.getCurrentUser() != null) {
-                    AVIMClient client = AVIMClient.getInstance(WxUser.getCurrentUser().getUsername());
-                    AVIMConversationsQuery query = client.getConversationsQuery();
-                    query.whereEqualTo("objectId", cid);
-                    query.findInBackground(new AVIMConversationQueryCallback() {
+                    //查询用户是否创建了设备id
+                    final WxUser user = WxUser.getCurrentUser();
+                    user.fetchInBackground(new GetCallback<AVObject>() {
                         @Override
-                        public void done(List<AVIMConversation> conversations, AVIMException e) {
+                        public void done(AVObject object, AVException e) {
                             if (e == null) {
-                                if(conversations.size()>0){
-                                    AVIMConversation conversation=conversations.get(0);
-                                    conversation.setAttribute("privacy",isChecked);
-                                    conversation.updateInfoInBackground(new AVIMConversationCallback() {
+                                if (user.getDeviceId() != null && !user.getDeviceId().equals("")) {//设备id存在，直接验证
+                                    AVIMClient client = AVIMClient.getInstance(WxUser.getCurrentUser().getUsername());
+                                    AVIMConversationsQuery query = client.getConversationsQuery();
+                                    query.whereEqualTo("objectId", cid);
+                                    query.findInBackground(new AVIMConversationQueryCallback() {
                                         @Override
-                                        public void done(AVIMException e) {
-                                            if(e==null){
-                                                Toast.makeText(ChatSettingActivity.this, "设置成功", Toast.LENGTH_SHORT).show();
-                                            }else{
-                                                switchButton_privacy.setChecked(!isChecked);
-                                                Toast.makeText(ChatSettingActivity.this, "设置失败", Toast.LENGTH_SHORT).show();
+                                        public void done(List<AVIMConversation> conversations, AVIMException e) {
+                                            if (e == null) {
+                                                if (conversations.size() > 0) {
+                                                    AVIMConversation conversation = conversations.get(0);
+                                                    //获取conv中的privacy设置
+                                                    String json = (String) conversation.getAttribute("privacy");
+                                                    try {
+                                                        JSONObject jo = new JSONObject(json);
+                                                        jo.put(WxUser.getCurrentUser().getUsername(), isChecked);
+                                                        conversation.setAttribute("privacy", jo.toString());
+                                                        conversation.updateInfoInBackground(new AVIMConversationCallback() {
+                                                            @Override
+                                                            public void done(AVIMException e) {
+                                                                if (e == null) {
+                                                                    Toast.makeText(ChatSettingActivity.this, "设置成功", Toast.LENGTH_SHORT).show();
+                                                                } else {
+                                                                    switchButton_privacy.setChecked(!isChecked);
+                                                                    Toast.makeText(ChatSettingActivity.this, "设置失败", Toast.LENGTH_SHORT).show();
+                                                                }
+                                                            }
+                                                        });
+                                                    } catch (JSONException e1) {
+                                                        e1.printStackTrace();
+                                                    }
+                                                } else {
+                                                    switchButton_privacy.setChecked(!isChecked);
+                                                    Toast.makeText(ChatSettingActivity.this, "会话不存在", Toast.LENGTH_SHORT).show();
+                                                }
+                                            } else {
+                                                Log.e("隐私会话设置失败", e.toString());
+                                                Toast.makeText(ChatSettingActivity.this, "隐私设置失败", Toast.LENGTH_SHORT).show();
                                             }
                                         }
                                     });
-                                }else{
-                                    switchButton_privacy.setChecked(!isChecked);
-                                    Toast.makeText(ChatSettingActivity.this, "会话不存在", Toast.LENGTH_SHORT).show();
+                                } else {//设备id不存在，先创建id
+                                    AlertDialog dialog = new AlertDialog.Builder(ChatSettingActivity.this).create();
+                                    dialog.setTitle("提示");
+                                    dialog.setMessage("当前操作需要设置唯一设备ID,是否前往设置？");
+                                    dialog.setButton(DialogInterface.BUTTON_POSITIVE, "确定", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                            //前往创建id界面
+                                            startActivity(new Intent(ChatSettingActivity.this, SetDeviceIdActivity.class));
+                                            finish();
+                                        }
+                                    });
+                                    dialog.setButton(DialogInterface.BUTTON_NEGATIVE, "取消", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                        }
+                                    });
+                                    dialog.setCancelable(false);
+                                    dialog.show();
                                 }
                             } else {
-                                Log.e("隐私会话设置失败",e.toString());
-                                Toast.makeText(ChatSettingActivity.this, "隐私设置失败", Toast.LENGTH_SHORT).show();
+                                Log.e("获取最新用户失败", e.toString());
                             }
                         }
                     });
