@@ -26,6 +26,7 @@ import com.su.wx.models.Friend;
 import com.su.wx.models.WxUser;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class SearchUserActivity extends BaseActivity implements View.OnClickListener {
@@ -111,6 +112,9 @@ public class SearchUserActivity extends BaseActivity implements View.OnClickList
                             page = 0;
                         }
                     }else{
+                        users.clear();
+                        adapter.notifyDataSetChanged();
+                        page=0;
                         Toast.makeText(SearchUserActivity.this, "搜索结果为空", Toast.LENGTH_SHORT).show();
                     }
                 }else{
@@ -154,7 +158,16 @@ public class SearchUserActivity extends BaseActivity implements View.OnClickList
                             dialog.dismiss();
                             AVQuery<Friend> query=new AVQuery<>("Friend");
                             query.whereEqualTo("friendUser",selectUser);
-                            query.findInBackground(new FindCallback<Friend>() {
+                            AVQuery<Friend> query1=new AVQuery<>("Friend");
+                            query1.whereEqualTo("user",WxUser.getCurrentUser());
+                            AVQuery<Friend> query2=AVQuery.and(Arrays.asList(query,query1));
+                            AVQuery<Friend> query3=new AVQuery<>("Friend");
+                            query3.whereEqualTo("friendUser",WxUser.getCurrentUser());
+                            AVQuery<Friend> query4=new AVQuery<>("Friend");
+                            query4.whereEqualTo("user",selectUser);
+                            AVQuery<Friend> query5=AVQuery.and(Arrays.asList(query3,query4));
+                            AVQuery query6=AVQuery.or(Arrays.asList(query2,query5));
+                            query6.findInBackground(new FindCallback<Friend>() {
                                 @Override
                                 public void done(List<Friend> friends, AVException e) {
                                     if(e==null){

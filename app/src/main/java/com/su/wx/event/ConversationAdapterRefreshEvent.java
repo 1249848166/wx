@@ -1,9 +1,9 @@
 package com.su.wx.event;
 
-public class ConversationAdapterEvent {
+public class ConversationAdapterRefreshEvent {
     private String cid;
 
-    public ConversationAdapterEvent(String unreadCount) {
+    public ConversationAdapterRefreshEvent(String unreadCount) {
         this.cid = unreadCount;
     }
 

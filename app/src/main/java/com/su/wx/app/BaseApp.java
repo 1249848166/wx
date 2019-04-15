@@ -25,7 +25,7 @@ public class BaseApp extends Application {
 
         AVOSCloud.initialize(this,Core.getAppId(),Core.getClientKey());
         AVOSCloud.setDebugLogEnabled(true);
-        //AVIMClient.setMessageQueryCacheEnable(false);//不启用缓存消息
+        AVIMClient.setMessageQueryCacheEnable(true);//不启用缓存消息
         AVIMClient.setUnreadNotificationEnabled(true);//开启未读消息
 
         AVIMMessageManager.setConversationEventHandler(new CustomConversationHandler());

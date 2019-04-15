@@ -1,7 +1,7 @@
 package com.su.wx.utils;
 
-import com.avos.avoscloud.AVUser;
-
 public class Storage {
     public static String nickname="";
+    public static String cacheDirPath="/wx/image/";
+    public static String cacheImagePath="/wx/image/cache.jpg";
 }

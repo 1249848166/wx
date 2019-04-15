@@ -20,6 +20,7 @@ import com.su.wx.event.WoFragmentSetNicknameEvent;
 import com.su.wx.models.WxUser;
 import com.su.wx.utils.DeviceUtil;
 import com.su.wx.utils.PasswordUtil;
+import com.su.wx.utils.StatusBarUtil;
 import com.su.wx.utils.Storage;
 
 import org.greenrobot.eventbus.EventBus;
@@ -35,6 +36,8 @@ public class UserinfoSettingActivity extends AppCompatActivity implements View.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_userinfo_setting);
+
+        StatusBarUtil.setStatusTextColor(true,this);
 
         change_pwd=findViewById(R.id.change_pwd);
         edit_nickname=findViewById(R.id.edit_nickname);

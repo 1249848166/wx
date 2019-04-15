@@ -10,7 +10,7 @@ public class LrucacheUtil {
     LruCache<String,Bitmap> lruCache;
 
     private LrucacheUtil(){
-        lruCache=new LruCache<String,Bitmap>((int) (Runtime.getRuntime().maxMemory()/8)){
+        lruCache=new LruCache<String,Bitmap>((int) (Runtime.getRuntime().maxMemory()/2)){
             @Override
             protected int sizeOf(String key, Bitmap value) {
                 return value.getHeight()*value.getRowBytes();
@@ -30,7 +30,9 @@ public class LrucacheUtil {
     }
 
     public void put(String key,Bitmap value){
-        lruCache.put(key,value);
+        if(value!=null) {
+            lruCache.put(key, value);
+        }
     }
 
     public Bitmap get(String key){

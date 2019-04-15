@@ -65,30 +65,35 @@ public class WoFragment extends Fragment implements View.OnClickListener {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View content = LayoutInflater.from(getContext()).inflate(R.layout.layout_wo, container, false);
-        avatar = content.findViewById(R.id.avatar);
-        avatar.setImageResource(R.drawable.head);
-        TextView username = content.findViewById(R.id.username);
-        nickname = content.findViewById(R.id.nickname);
-        WxUser user = WxUser.getCurrentUser();
-        avatar.setOnClickListener(this);
-        if (user.getAvatar() != null) {
-            Log.e("head", user.getAvatar());
-            ImageLoader.getInstance().loadImage(avatar, user.getAvatar());
-        }
-        username.setText(user.getUsername());
-        if (user.getNickname() != null) {
-            nickname.setText("昵称:" + user.getNickname());
-        } else {
-            nickname.setText("昵称未设置");
-        }
+        View content=null;
+        try {
+            content = LayoutInflater.from(getContext()).inflate(R.layout.layout_wo, container, false);
+            avatar = content.findViewById(R.id.avatar);
+            TextView username = content.findViewById(R.id.username);
+            nickname = content.findViewById(R.id.nickname);
+            WxUser user = WxUser.getCurrentUser();
+            avatar.setOnClickListener(this);
+            if (user != null && user.getAvatar() != null) {
+                ImageLoader.getInstance().loadImage(avatar, user.getAvatar());
+            }
+            if (user != null) {
+                username.setText(user.getUsername());
+            }
+            if (user != null && user.getNickname() != null) {
+                nickname.setText("昵称:" + user.getNickname());
+            } else {
+                nickname.setText("昵称未设置");
+            }
 
-        Button logout = content.findViewById(R.id.logout);
-        logout.setOnClickListener(this);
-        Button deviceid = content.findViewById(R.id.deviceid);
-        deviceid.setOnClickListener(this);
-        Button userinfo = content.findViewById(R.id.userinfo);
-        userinfo.setOnClickListener(this);
+            Button logout = content.findViewById(R.id.logout);
+            logout.setOnClickListener(this);
+            Button deviceid = content.findViewById(R.id.deviceid);
+            deviceid.setOnClickListener(this);
+            Button userinfo = content.findViewById(R.id.userinfo);
+            userinfo.setOnClickListener(this);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         return content;
     }
 

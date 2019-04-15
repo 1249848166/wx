@@ -1,6 +1,6 @@
 package com.su.wx.activity;
 
-import android.app.ActionBar;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,6 +15,7 @@ import com.avos.avoscloud.SaveCallback;
 import com.su.wx.R;
 import com.su.wx.models.WxUser;
 import com.su.wx.utils.DeviceUtil;
+import com.su.wx.utils.StatusBarUtil;
 
 public class SetDeviceIdActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -29,10 +30,12 @@ public class SetDeviceIdActivity extends AppCompatActivity implements View.OnCli
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_device_id);
 
-        ActionBar actionBar=getActionBar();
+        ActionBar actionBar=getSupportActionBar();
         if(actionBar!=null) {
             actionBar.setTitle("设置唯一设备ID");
         }
+
+        StatusBarUtil.setStatusTextColor(true,this);
 
         nums=new TextView[]{
                 findViewById(R.id.num1),

@@ -34,6 +34,7 @@ import com.su.wx.models.Friend;
 import com.su.wx.models.WxUser;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class TongxunluFragment extends Fragment implements View.OnClickListener {
@@ -43,8 +44,7 @@ public class TongxunluFragment extends Fragment implements View.OnClickListener 
 
     SmartRefreshLayout refresh;
 
-    int selectIndex;
-    Friend selectFriend;
+    WxUser selectFriend;
 
     AlertDialog dialog_friend;
 
@@ -52,57 +52,64 @@ public class TongxunluFragment extends Fragment implements View.OnClickListener 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View content = LayoutInflater.from(getContext()).inflate(R.layout.layout_tongxunlu, container, false);
-        refresh = content.findViewById(R.id.refresh);
-        refresh.setRefreshHeader(new ClassicsHeader(getContext()));
-        refresh.setRefreshFooter(new FalsifyFooter(getContext()));
-        refresh.setOnRefreshListener(new OnRefreshListener() {
-            @Override
-            public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-                refreshLayout.finishRefresh(500);
-                getFriendList();
-            }
-        });
-        RecyclerView recycler = content.findViewById(R.id.recycler);
-        friends = new ArrayList<>();
-        adapter = new FriendListAdapter(getContext(), friends);
-        recycler.setAdapter(adapter);
-        ListDecoration decoration = new ListDecoration(5);
-        recycler.addItemDecoration(decoration);
-        recycler.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-        getFriendList();
-        adapter.setOnFriendSelecteListener(new FriendListAdapter.OnFriendSelecteListener() {
-            @Override
-            public void select(int position, Friend friend) {
-                selectIndex = position;
-                selectFriend = friend;
-                dialog_friend = new AlertDialog.Builder(getContext()).create();
-                dialog_friend.getWindow().setWindowAnimations(R.style.Dialog1);
-                WindowManager.LayoutParams params = dialog_friend.getWindow().getAttributes();
-                params.width = 50;
-                dialog_friend.getWindow().setAttributes(params);
-                View content = LayoutInflater.from(getContext()).inflate(R.layout.dialog_friend, null);
-                View look, delete, chat, cancel;
-                look = content.findViewById(R.id.look);
-                delete = content.findViewById(R.id.delete);
-                chat = content.findViewById(R.id.chat);
-                cancel = content.findViewById(R.id.cancel);
-                look.setOnClickListener(TongxunluFragment.this);
-                delete.setOnClickListener(TongxunluFragment.this);
-                chat.setOnClickListener(TongxunluFragment.this);
-                cancel.setOnClickListener(TongxunluFragment.this);
-                dialog_friend.setView(content);
-                dialog_friend.setCancelable(false);
-                dialog_friend.show();
-            }
-        });
+        try {
+            refresh = content.findViewById(R.id.refresh);
+            refresh.setRefreshHeader(new ClassicsHeader(getContext()));
+            refresh.setRefreshFooter(new FalsifyFooter(getContext()));
+            refresh.setOnRefreshListener(new OnRefreshListener() {
+                @Override
+                public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+                    refreshLayout.finishRefresh(500);
+                    getFriendList();
+                }
+            });
+            RecyclerView recycler = content.findViewById(R.id.recycler);
+            friends = new ArrayList<>();
+            adapter = new FriendListAdapter(getContext(), friends);
+            recycler.setAdapter(adapter);
+            ListDecoration decoration = new ListDecoration(5);
+            recycler.addItemDecoration(decoration);
+            recycler.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+            getFriendList();
+            adapter.setOnFriendSelecteListener(new FriendListAdapter.OnFriendSelecteListener() {
+                @Override
+                public void select(WxUser friendUser) {
+                    selectFriend = friendUser;
+                    dialog_friend = new AlertDialog.Builder(getContext()).create();
+                    dialog_friend.getWindow().setWindowAnimations(R.style.Dialog1);
+                    WindowManager.LayoutParams params = dialog_friend.getWindow().getAttributes();
+                    params.width = 50;
+                    dialog_friend.getWindow().setAttributes(params);
+                    View content = LayoutInflater.from(getContext()).inflate(R.layout.dialog_friend, null);
+                    View look, delete, chat, cancel;
+                    look = content.findViewById(R.id.look);
+                    delete = content.findViewById(R.id.delete);
+                    chat = content.findViewById(R.id.chat);
+                    cancel = content.findViewById(R.id.cancel);
+                    look.setOnClickListener(TongxunluFragment.this);
+                    delete.setOnClickListener(TongxunluFragment.this);
+                    chat.setOnClickListener(TongxunluFragment.this);
+                    cancel.setOnClickListener(TongxunluFragment.this);
+                    dialog_friend.setView(content);
+                    dialog_friend.setCancelable(false);
+                    dialog_friend.show();
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         return content;
     }
 
     private void getFriendList() {
         AVQuery<Friend> query = new AVQuery<>("Friend");
         query.whereEqualTo("user", WxUser.getCurrentUser());
+        AVQuery<Friend> query1=new AVQuery<>("Friend");
+        query1.whereEqualTo("friendUser",WxUser.getCurrentUser());
         query.limit(10000);
-        query.findInBackground(new FindCallback<Friend>() {
+        query1.limit(10000);
+        AVQuery<Friend> query2=AVQuery.or(Arrays.asList(query,query1));
+        query2.findInBackground(new FindCallback<Friend>() {
             @Override
             public void done(List<Friend> fs, AVException e) {
                 if (e == null) {
@@ -140,8 +147,7 @@ public class TongxunluFragment extends Fragment implements View.OnClickListener 
                 dialog_friend.dismiss();
                 final Intent intent = new Intent(getContext(), ChatActivity.class);
                 final ArrayList<String> ids = new ArrayList<>();
-                WxUser friendUser = (WxUser) selectFriend.get("friendUser");
-                String objectId = friendUser.getObjectId();
+                String objectId = selectFriend.getObjectId();
                 AVQuery<WxUser> query = new AVQuery<>("WxUser");
                 query.whereEqualTo("objectId", objectId);
                 query.findInBackground(new FindCallback<WxUser>() {
@@ -149,6 +155,7 @@ public class TongxunluFragment extends Fragment implements View.OnClickListener 
                     public void done(List<WxUser> users, AVException e) {
                         if (e == null && users.size() > 0) {
                             ids.add(users.get(0).getUsername());
+                            ids.add(WxUser.getCurrentUser().getUsername());
                             intent.putStringArrayListExtra("ids", ids);
                             startActivity(intent);
                         }

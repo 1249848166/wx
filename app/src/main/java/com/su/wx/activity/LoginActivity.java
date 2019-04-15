@@ -4,8 +4,10 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -29,6 +31,7 @@ import com.su.wx.R;
 import com.su.wx.models.WxUser;
 import com.su.wx.utils.DeviceUtil;
 import com.su.wx.utils.PasswordUtil;
+import com.su.wx.utils.StatusBarUtil;
 
 import java.util.List;
 
@@ -44,6 +47,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        StatusBarUtil.setStatusTextColor(true,this);
+
+        ActionBar actionBar=getSupportActionBar();
+        if(actionBar!=null){
+            actionBar.setTitle("注册或登录");
+        }
 
         initViews();
 

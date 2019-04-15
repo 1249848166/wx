@@ -39,7 +39,6 @@ import java.util.List;
 
 public class ChatSettingActivity extends AppCompatActivity implements View.OnClickListener {
 
-    Button invite;
     PopupWindow popupWindow;
     View content;
     RecyclerView recycler;
@@ -50,9 +49,6 @@ public class ChatSettingActivity extends AppCompatActivity implements View.OnCli
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_setting);
-
-        invite=findViewById(R.id.invite);
-        invite.setOnClickListener(this);
 
         DisplayMetrics metrics=getResources().getDisplayMetrics();
         int width=metrics.widthPixels;
@@ -90,7 +86,7 @@ public class ChatSettingActivity extends AppCompatActivity implements View.OnCli
         adapter=new FriendListAdapter(this,friends);
         adapter.setOnFriendSelecteListener(new FriendListAdapter.OnFriendSelecteListener() {
             @Override
-            public void select(int position, final Friend friend) {
+            public void select(final WxUser friendUser) {
                 AlertDialog dialog=new AlertDialog.Builder(ChatSettingActivity.this).create();
                 dialog.setTitle("提示");
                 dialog.setMessage("是否将他添加到聊天当中？");
@@ -101,18 +97,30 @@ public class ChatSettingActivity extends AppCompatActivity implements View.OnCli
                         //将选中的好友添加到聊天
                         AVIMClient client=AVIMClient.getInstance(WxUser.getCurrentUser().getUsername());
                         final AVIMConversation conv=client.getConversation(getIntent().getStringExtra("conv"));
-                        final WxUser friendUser= (WxUser) friend.get("friendUser");
                         AVQuery<WxUser> query=new AVQuery<>("WxUser");
                         query.whereEqualTo("objectId",friendUser.getObjectId());
                         query.findInBackground(new FindCallback<WxUser>() {
                             @Override
-                            public void done(List<WxUser> us, AVException e) {
+                            public void done(final List<WxUser> us, AVException e) {
                                 if(e==null){
                                     if(us.size()>0){
                                         conv.addMembers(Arrays.asList((String)us.get(0).getUsername()), new AVIMConversationCallback() {
                                             @Override
                                             public void done(AVIMException e) {
                                                 if(e==null){
+                                                    conv.setName(conv.getName()+","+us.get(0).getUsername());
+                                                    conv.updateInfoInBackground(new AVIMConversationCallback() {
+                                                        @Override
+                                                        public void done(AVIMException e) {
+
+                                                        }
+                                                    });
+                                                    conv.fetchInfoInBackground(new AVIMConversationCallback() {
+                                                        @Override
+                                                        public void done(AVIMException e) {
+
+                                                        }
+                                                    });
                                                     popupWindow.dismiss();
                                                     Toast.makeText(ChatSettingActivity.this, "添加成功", Toast.LENGTH_SHORT).show();
                                                 }else{
@@ -169,11 +177,6 @@ public class ChatSettingActivity extends AppCompatActivity implements View.OnCli
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.invite:
-                popupWindow.showAtLocation(v,Gravity.BOTTOM,0,0);
-                backgroundAlpha(0.3f);
-                break;
-        }
+
     }
 }

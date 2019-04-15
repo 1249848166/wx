@@ -1,7 +1,7 @@
 package com.su.wx.activity;
 
-import android.app.ActionBar;
 import android.content.Intent;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,6 +18,7 @@ import com.avos.avoscloud.SaveCallback;
 import com.su.wx.R;
 import com.su.wx.models.WxUser;
 import com.su.wx.utils.DeviceUtil;
+import com.su.wx.utils.StatusBarUtil;
 
 import java.util.List;
 
@@ -34,10 +35,12 @@ public class VerifyDeviceIdActivity extends AppCompatActivity implements View.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_verify_device_id);
 
-        ActionBar actionBar=getActionBar();
+        ActionBar actionBar=getSupportActionBar();
         if(actionBar!=null) {
             actionBar.setTitle("验证设备ID");
         }
+
+        StatusBarUtil.setStatusTextColor(true,this);
 
         nums=new TextView[]{
                 findViewById(R.id.num1),

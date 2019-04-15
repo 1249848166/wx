@@ -27,14 +27,14 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Ho
 
     @Override
     public void onClick(View v) {
-        int i= (int) v.getTag();
+        WxUser t= (WxUser) v.getTag();
         if(onFriendSelecteListener!=null){
-            onFriendSelecteListener.select(i,friends.get(i));
+            onFriendSelecteListener.select(t);
         }
     }
 
     public interface OnFriendSelecteListener{
-        void select(int position, Friend friend);
+        void select(WxUser friendUser);
     }
 
     private OnFriendSelecteListener onFriendSelecteListener;
@@ -58,10 +58,18 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Ho
     @Override
     public void onBindViewHolder(@NonNull Holder holder, final int i) {
         final ImageView avatar=holder.itemView.findViewById(R.id.avatar);
+        avatar.setImageResource(R.drawable.head_hold);
         final TextView username=holder.itemView.findViewById(R.id.username);
         WxUser friendUser= (WxUser) friends.get(i).get("friendUser");
-        if(friendUser!=null){
-            String objectId=friendUser.getObjectId();
+        WxUser user= (WxUser) friends.get(i).get("user");
+        WxUser target=null;
+        if(friendUser.getObjectId().equals(WxUser.getCurrentUser().getObjectId())){
+            target=user;
+        }else{
+            target=friendUser;
+        }
+        if(target!=null){
+            String objectId=target.getObjectId();
             AVQuery<WxUser> query=new AVQuery<>("WxUser");
             query.whereEqualTo("objectId",objectId);
             query.findInBackground(new FindCallback<WxUser>() {
@@ -70,17 +78,17 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Ho
                     if(e==null&&users.size()>0){
                         String usn=users.get(0).getUsername();
                         String av=users.get(0).getAvatar();
-                        if(usn!=null){
+                        if(usn!=null&&!usn.equals("")){
                             username.setText(usn);
                         }
-                        if(av!=null){
+                        if(av!=null&&!av.equals("")){
                             ImageLoader.getInstance().loadImage(avatar,av);
                         }
                     }
                 }
             });
         }
-        holder.itemView.setTag(i);
+        holder.itemView.setTag(target);
         holder.itemView.setOnClickListener(this);
     }
 

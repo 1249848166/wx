@@ -5,6 +5,10 @@ import android.util.Log;
 import com.avos.avoscloud.im.v2.AVIMClient;
 import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.avos.avoscloud.im.v2.AVIMConversationEventHandler;
+import com.su.wx.event.ConversationAdapterReceiveEvent;
+import com.su.wx.event.ConversationAdapterRefreshEvent;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
@@ -18,6 +22,7 @@ public class CustomConversationHandler extends AVIMConversationEventHandler {
     @Override
     public void onMemberJoined(AVIMClient client, AVIMConversation conversation, List<String> members, String invitedBy) {
         Log.e("成员被邀请",members.get(0)+"被"+invitedBy+"邀请加入群聊");
+        EventBus.getDefault().post(new ConversationAdapterReceiveEvent());
     }
 
     @Override
@@ -28,5 +33,7 @@ public class CustomConversationHandler extends AVIMConversationEventHandler {
     @Override
     public void onInvited(AVIMClient client, AVIMConversation conversation, String operator) {
         Log.e("你加入了聊天群","aaa");
+        EventBus.getDefault().post(new ConversationAdapterReceiveEvent());
     }
+
 }

@@ -9,6 +9,8 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
     <!-- 基础模块 END -->
     <application
@@ -21,6 +23,16 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning,UnusedAttribute">
+
+        <provider
+            android:authorities="com.su.wx.fileprovider"
+            android:name="android.support.v4.content.FileProvider"
+            android:grantUriPermissions="true"
+            android:exported="false">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/filepaths"/>
+        </provider>
 
         <!-- 即时通讯模块、推送（均需要加入以下声明） START -->
         <!-- 即时通讯模块、推送都要使用 PushService -->
@@ -42,6 +54,7 @@
 
         <activity
             android:name=".activity.SplashActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/Launch">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -51,19 +64,40 @@
         </activity>
         <activity
             android:name=".activity.MainActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/NoTitle" />
-        <activity android:name=".activity.LoginActivity" />
+        <activity android:name=".activity.LoginActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/NoTitle"
+            />
         <activity
             android:name=".activity.ChatActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/NoTitle" />
         <activity
             android:name=".activity.SearchUserActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/NoTitle" />
-        <activity android:name=".activity.BaseActivity" />
-        <activity android:name=".activity.SetDeviceIdActivity" />
-        <activity android:name=".activity.VerifyDeviceIdActivity" />
-        <activity android:name=".activity.UserinfoSettingActivity" />
-        <activity android:name=".activity.ChatSettingActivity"></activity>
+        <activity
+            android:name=".activity.BaseActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.SetDeviceIdActivity"
+            android:theme="@style/NoTitle"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.VerifyDeviceIdActivity"
+            android:theme="@style/NoTitle"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.UserinfoSettingActivity"
+            android:theme="@style/NoTitle"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.ChatSettingActivity"
+            android:theme="@style/NoTitle"
+            android:screenOrientation="portrait" />
+        <activity android:name=".activity.PermissionActivity" />
     </application>
 
 </manifest>
