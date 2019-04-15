@@ -27,6 +27,7 @@ import com.scwang.smartrefresh.layout.header.ClassicsHeader;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.su.wx.R;
 import com.su.wx.activity.ChatActivity;
+import com.su.wx.activity.ConversationVerifyDeviceIdActivity;
 import com.su.wx.adapters.ConversationAdapter;
 import com.su.wx.decoration.ListDecoration;
 import com.su.wx.event.ConversationAdapterReceiveEvent;
@@ -79,11 +80,28 @@ public class WeixinFragment extends Fragment {
             recycler.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
             adapter.setOnConverationSelectListener(new ConversationAdapter.OnConverationSelectListener() {
                 @Override
-                public void select(int index, AVIMConversation conversation) {
-                    Intent intent = new Intent(getContext(), ChatActivity.class);
-                    List<String> ids = new ArrayList<>(conversation.getMembers());
-                    intent.putStringArrayListExtra("ids", (ArrayList<String>) ids);
-                    startActivity(intent);
+                public void select(int index, final AVIMConversation conversation) {
+                    conversation.fetchInfoInBackground(new AVIMConversationCallback() {
+                        @Override
+                        public void done(AVIMException e) {//获取最新会话判断隐私设置
+                            if(e==null){
+                                boolean privacy= (boolean) conversation.getAttribute("privacy");
+                                List<String> ids = new ArrayList<>(conversation.getMembers());
+                                if(privacy){
+                                    //前往验证密码界面
+                                    Intent intent = new Intent(getContext(), ConversationVerifyDeviceIdActivity.class);
+                                    intent.putStringArrayListExtra("ids", (ArrayList<String>) ids);
+                                    startActivity(intent);
+                                }else {
+                                    Intent intent = new Intent(getContext(), ChatActivity.class);
+                                    intent.putStringArrayListExtra("ids", (ArrayList<String>) ids);
+                                    startActivity(intent);
+                                }
+                            }else{
+                                Log.e("会话更新失败",e.toString());
+                            }
+                        }
+                    });
                 }
             });
             new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {

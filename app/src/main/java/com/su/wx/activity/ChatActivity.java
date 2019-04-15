@@ -1,5 +1,6 @@
 package com.su.wx.activity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -20,6 +21,7 @@ import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.avos.avoscloud.AVFile;
@@ -87,6 +89,7 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener {
 
     View loading;
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,10 +109,8 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener {
             sb.deleteCharAt(sb.length() - 1);
             name = sb.toString();
 
-            android.app.ActionBar actionBar = getActionBar();
-            if (actionBar != null) {
-                actionBar.setTitle(sb.toString());
-            }
+            TextView title=findViewById(R.id.title);
+            title.setText(name+"的聊天");
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -215,9 +216,21 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener {
             @Override
             public void onAnimationEnd(Animation animation) {
                 if (cid != null) {
-                    Intent intent = new Intent(ChatActivity.this, ChatSettingActivity.class);
-                    intent.putExtra("conv", cid);
-                    startActivity(intent);
+                    final Intent intent = new Intent(ChatActivity.this, ChatSettingActivity.class);
+                    intent.putExtra("belong", name);
+                    intent.putExtra("conv",cid);
+                    conversation.fetchInfoInBackground(new AVIMConversationCallback() {
+                        @Override
+                        public void done(AVIMException e) {
+                            if(e==null){
+                                boolean privacy= (boolean) conversation.getAttribute("privacy");
+                                intent.putExtra("privacy",privacy);
+                                startActivity(intent);
+                            }else{
+                                Log.e("获取最新会话失败",e.toString());
+                            }
+                        }
+                    });
                 }
             }
 
@@ -268,6 +281,7 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener {
     private void createConversation(List<String> others, String name) {
         HashMap<String, Object> map = new HashMap<>();
         map.put("importance", true);
+        map.put("privacy",false);
         AVIMClient client = AVIMClient.getInstance(WxUser.getCurrentUser().getUsername());
         client.createConversation(others, name, map, false, true,
                 new AVIMConversationCreatedCallback() {

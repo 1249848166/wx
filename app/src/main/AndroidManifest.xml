@@ -99,6 +99,9 @@
             android:theme="@style/NoTitle"
             android:screenOrientation="portrait" />
         <activity android:name=".activity.PermissionActivity" />
+        <activity android:name=".activity.ConversationVerifyDeviceIdActivity"
+            android:theme="@style/NoTitle"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

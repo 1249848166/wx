@@ -1,10 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    android:orientation="vertical"
+<LinearLayout android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="@color/silver"
     android:layout_height="match_parent"
-    tools:context=".activity.ChatSettingActivity">
+    tools:context=".activity.ChatSettingActivity"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <android.support.v7.widget.Toolbar
+        app:contentInsetStart="0dp"
+        android:layout_marginTop="25dp"
+        android:gravity="center_vertical"
+        android:background="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_marginLeft="15dp"
+                android:textColor="@color/black"
+                android:text="聊天设置"
+                android:textSize="18sp"
+                android:ellipsize="end"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                tools:ignore="HardcodedText,RtlHardcoded" />
+
+            <TextView
+                android:id="@+id/belong"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:ellipsize="end"
+                android:text="谁和谁的聊天设置"
+                android:gravity="right"
+                android:layout_marginRight="10dp"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                tools:ignore="HardcodedText,RtlHardcoded,SmallSp" />
+
+        </LinearLayout>
+
+    </android.support.v7.widget.Toolbar>
+
+    <RelativeLayout
+        android:padding="15dp"
+        android:background="@drawable/round_chat"
+        android:layout_width="match_parent"
+        android:layout_margin="5dp"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:textSize="17sp"
+            android:textColor="@color/black"
+            android:text="会话界面加密"
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:ignore="HardcodedText" />
+
+        <com.suke.widget.SwitchButton
+            android:id="@+id/privacy"
+            android:checked="false"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_width="50dp"
+            android:layout_height="30dp" />
+
+    </RelativeLayout>
 
 </LinearLayout>

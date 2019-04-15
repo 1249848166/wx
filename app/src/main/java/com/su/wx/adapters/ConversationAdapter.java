@@ -155,30 +155,32 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
                 alert.setVisibility(View.VISIBLE);
             }
             AVIMMessage lastMeg = conv.getLastMessage();
-            String json = lastMeg.getContent();
-            int type;
-            String c;
-            try {
-                JSONObject jsonObject = new JSONObject(json);
-                type = (int) jsonObject.get("_lctype");
-                if (type == AVIMMessageType.TEXT_MESSAGE_TYPE) {
-                    c = (String) jsonObject.get("_lctext");
-                    content.setText(c);//设置会话最后一条内容
-                }else if(type==AVIMMessageType.IMAGE_MESSAGE_TYPE){
-                    content.setText("[图片]");
-                }else if(type==AVIMMessageType.AUDIO_MESSAGE_TYPE){
-                    content.setText("[音频]");
-                }else if(type==AVIMMessageType.VIDEO_MESSAGE_TYPE){
-                    content.setText("[视频]");
-                }else if(type==AVIMMessageType.LOCATION_MESSAGE_TYPE){
-                    content.setText("[位置]");
-                }else if(type==AVIMMessageType.FILE_MESSAGE_TYPE){
-                    content.setText("[文件]");
-                }else if(type==AVIMMessageType.RECALLED_MESSAGE_TYPE){
-                    content.setText("[]");
+            if(lastMeg!=null) {
+                String json = lastMeg.getContent();
+                int type;
+                String c;
+                try {
+                    JSONObject jsonObject = new JSONObject(json);
+                    type = (int) jsonObject.get("_lctype");
+                    if (type == AVIMMessageType.TEXT_MESSAGE_TYPE) {
+                        c = (String) jsonObject.get("_lctext");
+                        content.setText(c);//设置会话最后一条内容
+                    } else if (type == AVIMMessageType.IMAGE_MESSAGE_TYPE) {
+                        content.setText("[图片]");
+                    } else if (type == AVIMMessageType.AUDIO_MESSAGE_TYPE) {
+                        content.setText("[音频]");
+                    } else if (type == AVIMMessageType.VIDEO_MESSAGE_TYPE) {
+                        content.setText("[视频]");
+                    } else if (type == AVIMMessageType.LOCATION_MESSAGE_TYPE) {
+                        content.setText("[位置]");
+                    } else if (type == AVIMMessageType.FILE_MESSAGE_TYPE) {
+                        content.setText("[文件]");
+                    } else if (type == AVIMMessageType.RECALLED_MESSAGE_TYPE) {
+                        content.setText("[]");
+                    }
+                } catch (JSONException e1) {
+                    e1.printStackTrace();
                 }
-            } catch (JSONException e1) {
-                e1.printStackTrace();
             }
         } catch (Exception e) {
             e.printStackTrace();

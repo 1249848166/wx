@@ -21,6 +21,7 @@
             android:layout_height="match_parent">
 
             <TextView
+                android:id="@+id/title"
                 android:text="唯信"
                 android:textSize="19sp"
                 android:layout_marginLeft="15dp"
@@ -50,7 +51,7 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="wrap_content" />
 
         <RelativeLayout
             android:id="@+id/loading"
