@@ -84,20 +84,31 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        if(WxUser.getCurrentUser()==null){
+            startActivity(new Intent(this,LoginActivity.class));
+            finish();
+        }
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
-        AVIMClient client=AVIMClient.getInstance(WxUser.getCurrentUser().getUsername());
-        if(client!=null) {
-            client.close(new AVIMClientCallback() {
-                @Override
-                public void done(AVIMClient client, AVIMException e) {
-                    if (e == null) {
-                        Log.e("关闭im连接", "成功");
-                    } else {
-                        Log.e("关闭im连接", "失败");
+        if(WxUser.getCurrentUser()!=null) {
+            AVIMClient client = AVIMClient.getInstance(WxUser.getCurrentUser().getUsername());
+            if (client != null) {
+                client.close(new AVIMClientCallback() {
+                    @Override
+                    public void done(AVIMClient client, AVIMException e) {
+                        if (e == null) {
+                            Log.e("关闭im连接", "成功");
+                        } else {
+                            Log.e("关闭im连接", "失败");
+                        }
                     }
-                }
-            });
+                });
+            }
         }
     }
 

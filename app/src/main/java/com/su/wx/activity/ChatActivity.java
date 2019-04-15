@@ -1,6 +1,7 @@
 package com.su.wx.activity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -64,6 +65,7 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener {
     EditText input;
     Button send;
 
+    LinearLayoutManager linearLayoutManager;
     RecyclerView recycler;
     ChatAdapter adapter;
     List<AVIMMessage> messages;
@@ -125,15 +127,15 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
-            final String filePath = getPath(this, data.getData());
-            File f = new File(filePath);
-            if (f.exists()) {
-                Log.e("文件", "存在");
-            } else {
-                Log.e("文件", "不存在");
-            }
-            if (requestCode == CODE_SELECT_IMAGE||requestCode==CODE_CAMERA) {
+            if (requestCode == CODE_SELECT_IMAGE) {
                 try {
+                    final String filePath = getPath(this, data.getData());
+                    File f = new File(filePath);
+                    if (f.exists()) {
+                        Log.e("文件", "存在");
+                    } else {
+                        Log.e("文件", "不存在");
+                    }
                     if (!filePath.endsWith(".gif")
                             && Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
 
@@ -157,6 +159,30 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener {
                     } else {
                         chat_image(filePath, filePath.substring(filePath.lastIndexOf("/") + 1, filePath.length()));
                     }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }else if(requestCode==CODE_CAMERA){
+                try {
+                    BitmapUtil.encode(Environment.getExternalStorageDirectory()+Storage.cacheImagePath,
+                            Environment.getExternalStorageDirectory()+Storage.cacheImagePath,
+                            new BitmapUtil.Callback() {
+                        @Override
+                        public void forDone() {
+                            new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        chat_image(Environment.getExternalStorageDirectory()+Storage.cacheImagePath,
+                                                Storage.cacheImagePath.substring(
+                                                        Storage.cacheImagePath.lastIndexOf("/") + 1, Storage.cacheImagePath.length()));
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            },500);
+                        }
+                    });
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -234,7 +260,9 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener {
         adapter = new ChatAdapter(this, messages);
         recycler.setAdapter(adapter);
         recycler.addItemDecoration(new ListDecoration(20));
-        recycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        linearLayoutManager=new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        linearLayoutManager.setStackFromEnd(true);
+        recycler.setLayoutManager(linearLayoutManager);
     }
 
     private void createConversation(List<String> others, String name) {
@@ -461,7 +489,6 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener {
             if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
                 Intent intent=new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 File file = new File(Environment.getExternalStorageDirectory()+Storage.cacheImagePath);
-                String photoFileName = file.getAbsolutePath();
                 Uri uri;
                 if (Build.VERSION.SDK_INT >= 24) {
                     uri = FileProvider.getUriForFile(getApplicationContext(), "com.su.wx.fileprovider", file);

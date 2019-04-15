@@ -3,6 +3,6 @@
     <paths>
         <external-path
             name="external_cache_path"
-            path="/wx/image" />
+            path="wx/image" />
     </paths>
 </resources>

@@ -100,4 +100,31 @@
 
     </LinearLayout>
 
+    <RelativeLayout
+        android:id="@+id/loading"
+        android:padding="10dp"
+        android:visibility="gone"
+        android:background="@drawable/round_chat"
+        android:elevation="5dp"
+        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ProgressBar
+            android:id="@+id/progress"
+            android:layout_centerVertical="true"
+            android:layout_width="25dp"
+            android:layout_height="25dp" />
+
+        <TextView
+            android:layout_toRightOf="@+id/progress"
+            android:text="正在检查登录..."
+            android:layout_marginLeft="10dp"
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:ignore="HardcodedText" />
+
+    </RelativeLayout>
+
 </RelativeLayout>

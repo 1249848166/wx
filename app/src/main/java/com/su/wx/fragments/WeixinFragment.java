@@ -102,7 +102,7 @@ public class WeixinFragment extends Fragment {
         try {
             AVIMClient client = AVIMClient.getInstance(WxUser.getCurrentUser().getUsername());
             AVIMConversationsQuery query=client.getConversationsQuery();
-            query.setLimit(1000);
+            query.setLimit(10000);
             query.findInBackground(new AVIMConversationQueryCallback() {
                 @Override
                 public void done(List<AVIMConversation> conversations, AVIMException e) {

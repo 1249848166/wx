@@ -11,6 +11,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -42,6 +43,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     Button login;
     CheckBox check;
 
+    boolean isLoading=true;
+    View loading;
+
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +60,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
 
         initViews();
+        loading.setVisibility(View.VISIBLE);
 
         PackageManager manager=getPackageManager();
         try {
@@ -69,10 +74,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         if(!password[0].equals("")&&!password[1].equals("")){
             check.setChecked(true);
             signUpOrLogin(password[0],password[1]);
+        }else{
+            loading.setVisibility(View.GONE);
+            isLoading=false;
         }
     }
 
     private void initViews() {
+        loading=findViewById(R.id.loading);
         version=findViewById(R.id.version);
         username=findViewById(R.id.username);
         password=findViewById(R.id.password);
@@ -83,8 +92,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void onClick(View v) {
+        if(isLoading) {
+            Toast.makeText(this, "正在检查登录，请稍后", Toast.LENGTH_SHORT).show();
+            return;
+        }
         switch (v.getId()){
             case R.id.login:
+                loading.setVisibility(View.VISIBLE);
+                isLoading=true;
                 validate();
                 break;
         }
@@ -98,6 +113,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             signUpOrLogin(usn,pwd);
         }else{
             Toast.makeText(this, "请输入用户名或密码", Toast.LENGTH_SHORT).show();
+            loading.setVisibility(View.GONE);
+            isLoading=false;
         }
     }
 
@@ -118,6 +135,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         query1.findInBackground(new FindCallback<WxUser>() {
                             @Override
                             public void done(List<WxUser> users, AVException e) {
+                                loading.setVisibility(View.GONE);
+                                isLoading=false;
                                 if(e==null&&users.size()>0){
                                     WxUser.setCurrentUser(users.get(0));
                                     loginIMClient();
@@ -137,6 +156,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         query1.findInBackground(new FindCallback<WxUser>() {
                             @Override
                             public void done(List<WxUser> users, AVException e) {
+                                loading.setVisibility(View.GONE);
+                                isLoading=false;
                                 if(e==null){
                                     if(users.size()>0){//已经存在设备
                                         Toast.makeText(LoginActivity.this, "一个设备只能创建一个账号", Toast.LENGTH_SHORT).show();
