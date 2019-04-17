@@ -10,9 +10,16 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVObject;
+import com.avos.avoscloud.AVQuery;
+import com.avos.avoscloud.FindCallback;
+import com.avos.avoscloud.GetCallback;
 import com.jelly.mango.Mango;
 import com.jelly.mango.MultiplexImage;
 import com.su.wx.R;
+import com.su.wx.models.Circle;
+import com.su.wx.models.WxUser;
 import com.su.wx.utils.ImageLoader;
 
 import org.json.JSONException;
@@ -24,11 +31,11 @@ import java.util.List;
 public class CircleAdapter extends RecyclerView.Adapter<CircleAdapter.Holder> implements View.OnClickListener {
 
     Context context;
-    List<String> contents;
+    List<Circle> circles;
 
-    public CircleAdapter(Context context, List<String> contents) {
+    public CircleAdapter(Context context, List<Circle> circles) {
         this.context = context;
-        this.contents = contents;
+        this.circles = circles;
     }
 
     private final int type_only_text=0;
@@ -38,7 +45,7 @@ public class CircleAdapter extends RecyclerView.Adapter<CircleAdapter.Holder> im
 
     @Override
     public int getItemViewType(int position) {
-        String content=contents.get(position);
+        String content= circles.get(position).getContent();
         int type=0;
         try {
             JSONObject jsonObject=new JSONObject(content);
@@ -75,25 +82,35 @@ public class CircleAdapter extends RecyclerView.Adapter<CircleAdapter.Holder> im
     @Override
     public void onBindViewHolder(@NonNull Holder holder, int i) {
         try {
-            String content = contents.get(i);
+            String content = circles.get(i).getContent();
             JSONObject jsonObject = null;
             try {
                 jsonObject = new JSONObject(content);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            ImageView head = holder.itemView.findViewById(R.id.head);
+            final ImageView head = holder.itemView.findViewById(R.id.head);
             head.setTag("head");
             head.setOnClickListener(this);
-            if (jsonObject.has("avatar")) {
-                try {
-                    String av = jsonObject.getString("avatar").replace("\\/", "/");
-                    ImageLoader.getInstance().loadImage(head, av);
-                } catch (JSONException e) {
-                    e.printStackTrace();
+            WxUser from= (WxUser) circles.get(i).get("from");
+            from.fetchInBackground(new GetCallback<AVObject>() {
+                @Override
+                public void done(AVObject u, AVException e) {
+                    if(e==null){
+                        if(u!=null){
+                            String av= (String) u.get("avatar");
+                            if(av!=null&&!av.equals("")){
+                                ImageLoader.getInstance().loadImage(head,av);
+                            }
+                        }
+                    }else{
+                        Log.e("查询用户失败",e.toString());
+                    }
                 }
-            }
+            });
             TextView username = holder.itemView.findViewById(R.id.username);
+            username.setTag("head");
+            username.setOnClickListener(this);
             if (jsonObject.has("username")) {
                 try {
                     username.setText(jsonObject.getString("username"));
@@ -194,7 +211,7 @@ public class CircleAdapter extends RecyclerView.Adapter<CircleAdapter.Holder> im
 
     @Override
     public int getItemCount() {
-        return contents.size();
+        return circles.size();
     }
 
     @Override
@@ -204,7 +221,7 @@ public class CircleAdapter extends RecyclerView.Adapter<CircleAdapter.Holder> im
             String[] ts=tag.split(":");
             String pos=ts[1];
             List<String> imageUrls=new ArrayList<>();
-            String content=contents.get(Integer.valueOf(pos));
+            String content= circles.get(Integer.valueOf(pos)).getContent();
             JSONObject jsonObject=null;
             try {
                 jsonObject=new JSONObject(content);
@@ -250,6 +267,8 @@ public class CircleAdapter extends RecyclerView.Adapter<CircleAdapter.Holder> im
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }else if(tag.startsWith("head")){
+            //点击头像，进入用户详情页
         }
     }
 

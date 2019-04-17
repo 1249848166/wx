@@ -26,10 +26,15 @@ import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.su.wx.R;
 import com.su.wx.adapters.CircleAdapter;
 import com.su.wx.decoration.ListDecoration;
+import com.su.wx.event.CircleRefreshEvent;
 import com.su.wx.models.Circle;
 import com.su.wx.models.Friend;
 import com.su.wx.models.WxUser;
 import com.su.wx.utils.StatusBarUtil;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,7 +45,7 @@ public class CircleActivity extends AppCompatActivity implements View.OnClickLis
     private int page=0;
     private final int limit=5;
     private List<WxUser> users;
-    List<String> contents;
+    List<Circle> circles;
     CircleAdapter adapter;
 
     final int type_refresh=0;
@@ -52,6 +57,8 @@ public class CircleActivity extends AppCompatActivity implements View.OnClickLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_circle);
+
+        EventBus.getDefault().register(this);
 
         StatusBarUtil.setStatusTextColor(true,this);
 
@@ -77,8 +84,8 @@ public class CircleActivity extends AppCompatActivity implements View.OnClickLis
             }
         });
 
-        contents=new ArrayList<>();
-        adapter=new CircleAdapter(this,contents);
+        circles=new ArrayList<>();
+        adapter=new CircleAdapter(this,circles);
         RecyclerView recycler=findViewById(R.id.recycler);
         recycler.setAdapter(adapter);
         recycler.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
@@ -120,6 +127,12 @@ public class CircleActivity extends AppCompatActivity implements View.OnClickLis
         });
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
+
     private void getCircleContents(final int type){
         AVQuery<Circle> query4=null;
         List<AVQuery<Circle>> querys=new ArrayList<>();
@@ -139,24 +152,20 @@ public class CircleActivity extends AppCompatActivity implements View.OnClickLis
                     if(type==type_refresh){
                         if(cs.size()>0){
                             page=1;
-                            contents.clear();
-                            for(Circle c:cs){
-                                contents.add(c.getContent());
-                            }
+                            circles.clear();
+                            circles.addAll(cs);
                             adapter.notifyDataSetChanged();
                         }else{
-                            contents.clear();
+                            circles.clear();
                             adapter.notifyDataSetChanged();
                             Toast.makeText(CircleActivity.this, "你的朋友圈空空如也", Toast.LENGTH_SHORT).show();
                         }
                     }else if(type==type_loadmore){
                         if(cs.size()>0){
                             page++;
-                            int origin=contents.size();
-                            for(Circle c:cs){
-                                contents.add(c.getContent());
-                            }
-                            adapter.notifyItemRangeInserted(origin,contents.size()-1);
+                            int origin=circles.size();
+                            circles.addAll(cs);
+                            adapter.notifyItemRangeInserted(origin,circles.size()-1);
                         }else{
                             Toast.makeText(CircleActivity.this, "没有更多内容", Toast.LENGTH_SHORT).show();
                         }
@@ -208,5 +217,11 @@ public class CircleActivity extends AppCompatActivity implements View.OnClickLis
         Animator animator2=ObjectAnimator.ofFloat(v,"scaleY",1f,0.95f,0.9f,0.95f,1f);
         animator2.setDuration(duration);
         animator2.start();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void refreshEvent(CircleRefreshEvent event){
+        page=0;
+        getCircleContents(type_refresh);
     }
 }

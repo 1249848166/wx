@@ -22,6 +22,7 @@ import com.avos.avoscloud.GetCallback;
 import com.avos.avoscloud.SaveCallback;
 import com.google.gson.Gson;
 import com.su.wx.R;
+import com.su.wx.event.CircleRefreshEvent;
 import com.su.wx.event.WoFragmentSetAvatarEvent;
 import com.su.wx.models.WxUser;
 import com.su.wx.utils.BitmapUtil;
@@ -187,11 +188,6 @@ public class WriteCircleActivity extends BaseActivity implements View.OnClickLis
                                     if(e==null){
                                         if(u!=null){
                                             circle.put("from",WxUser.getCurrentUser());
-                                            try {
-                                                jsonObject.put("avatar",WxUser.getCurrentUser().getAvatar());
-                                            } catch (JSONException e1) {
-                                                e1.printStackTrace();
-                                            }
                                             String json=jsonObject.toString();
                                             circle.put("content",json);
                                             circle.saveInBackground(new SaveCallback() {
@@ -207,6 +203,7 @@ public class WriteCircleActivity extends BaseActivity implements View.OnClickLis
                                                         image3.setImageResource(R.drawable.default_holder);
                                                         hideInput(WriteCircleActivity.this,text);
                                                         Toast.makeText(WriteCircleActivity.this, "发布成功", Toast.LENGTH_SHORT).show();
+                                                        EventBus.getDefault().post(new CircleRefreshEvent());//发送刷新事件
                                                     }else{
                                                         Toast.makeText(WriteCircleActivity.this, "发布失败", Toast.LENGTH_SHORT).show();
                                                     }
