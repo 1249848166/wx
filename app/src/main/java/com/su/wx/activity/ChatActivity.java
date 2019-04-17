@@ -1,6 +1,8 @@
 package com.su.wx.activity;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -55,6 +57,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -130,10 +133,10 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
+            final String filePath = getPath(this, data.getData());
+            File f = new File(filePath);
             if (requestCode == CODE_SELECT_IMAGE) {
                 try {
-                    final String filePath = getPath(this, data.getData());
-                    File f = new File(filePath);
                     if (f.exists()) {
                         Log.e("文件", "存在");
                     } else {
@@ -192,7 +195,29 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener {
             } else if (requestCode == CODE_SELECT_AUDIO) {
 
             } else if (requestCode == CODE_SELECT_VIDEO) {
-
+                try {
+                    FileInputStream fin=new FileInputStream(f);
+                    long size=fin.available()/(1024*1024);
+                    if(size>5){
+                        AlertDialog dialog=new AlertDialog.Builder(ChatActivity.this).create();
+                        dialog.setTitle("提示");
+                        dialog.setMessage("请将视频文件限制在5M之内");
+                        dialog.setButton(DialogInterface.BUTTON_POSITIVE, "确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                        dialog.setCancelable(false);
+                        dialog.show();
+                    }else{
+                        chat_video(filePath);
+                    }
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             } else if (requestCode == CODE_SELECT_FILE) {
 
             } else if (requestCode == CODE_SELECT_LOCATION) {
@@ -496,7 +521,10 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener {
 
                 break;
             case R.id.video:
-
+                Intent intent1 = new Intent(Intent.ACTION_GET_CONTENT);
+                intent1.setType("video/*");
+                intent1.addCategory(Intent.CATEGORY_OPENABLE);
+                startActivityForResult(intent1, CODE_SELECT_VIDEO);
                 break;
             case R.id.location:
 

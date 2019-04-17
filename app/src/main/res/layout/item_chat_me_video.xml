@@ -6,46 +6,52 @@
 
     <ImageView
         android:id="@+id/avatar"
-        android:layout_alignParentRight="true"
         android:src="@drawable/head_hold"
         android:scaleType="centerCrop"
-        android:layout_marginRight="5dp"
+        android:layout_marginLeft="5dp"
         android:layout_width="50dp"
         android:layout_height="50dp"
         tools:ignore="RtlHardcoded" />
 
     <LinearLayout
         android:orientation="vertical"
-        android:layout_toLeftOf="@+id/avatar"
+        android:layout_toRightOf="@+id/avatar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:ignore="RtlHardcoded">
 
         <TextView
             android:id="@+id/username"
-            android:layout_marginRight="5dp"
+            android:layout_marginLeft="5dp"
             android:layout_marginTop="10dp"
             android:textSize="12sp"
-            android:gravity="right"
-            android:layout_gravity="right"
+            android:gravity="left"
+            android:layout_gravity="left"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:ignore="HardcodedText" />
 
         <RelativeLayout
+            android:id="@+id/wraper"
+            android:orientation="vertical"
+            android:background="@drawable/round_chat"
+            android:padding="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:gravity="center"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            tools:ignore="UseCompoundDrawables">
 
-            <TextView
-                android:id="@+id/msg"
-                android:layout_alignParentRight="true"
-                android:padding="5dp"
-                android:layout_marginRight="5dp"
-                android:layout_marginTop="5dp"
-                android:background="@drawable/round_chat"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:ignore="HardcodedText" />
+            <com.su.wx.views.VideoPlayerView
+                android:id="@+id/player"
+                android:layout_width="match_parent"
+                android:layout_height="240dp" />
+
+            <!--<TextView-->
+                <!--android:id="@+id/tag"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content" />-->
 
         </RelativeLayout>
 

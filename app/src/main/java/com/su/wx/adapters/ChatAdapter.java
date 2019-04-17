@@ -1,6 +1,7 @@
 package com.su.wx.adapters;
 
 import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -8,6 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.avos.avoscloud.AVException;
@@ -26,6 +29,7 @@ import com.jelly.mango.MultiplexImage;
 import com.su.wx.R;
 import com.su.wx.models.WxUser;
 import com.su.wx.utils.ImageLoader;
+import com.su.wx.views.VideoPlayerView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -120,9 +124,9 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.Holder> implem
         }else if(i==type_other_AVIMAudioMessage){
             return new Holder(LayoutInflater.from(context).inflate(R.layout.item_chat_other_audio,viewGroup,false));
         }else if(i==type_me_AVIMVideoMessage){
-
+            return new Holder(LayoutInflater.from(context).inflate(R.layout.item_chat_me_video,viewGroup,false));
         }else if(i==type_other_AVIMVideoMessage){
-
+            return new Holder(LayoutInflater.from(context).inflate(R.layout.item_chat_other_video,viewGroup,false));
         }else if(i==type_me_AVIMLocationMessage){
 
         }else if(i==type_other_AVIMLocationMessage){
@@ -141,142 +145,164 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.Holder> implem
 
     @Override
     public void onBindViewHolder(@NonNull Holder holder, int i) {
-        final ImageView avatar=holder.itemView.findViewById(R.id.avatar);
-        final TextView username=holder.itemView.findViewById(R.id.username);
-        final String usn=messages.get(i).getFrom();
-        final long timestamp=messages.get(i).getTimestamp();
-        final String timeStr=getTimeStr(timestamp);
-        if(getItemViewType(i)<10) {
-            if (myName == null) {
-                AVQuery<WxUser> query = new AVQuery<>("WxUser");
-                query.whereEqualTo("username", usn);
-                query.findInBackground(new FindCallback<WxUser>() {
-                    @SuppressLint("SetTextI18n")
-                    @Override
-                    public void done(List<WxUser> us, AVException e) {
-                        if (e == null && us.size() > 0) {
-                            if (us.get(0).getNickname() != null) {
-                                username.setText(usn + "(" + us.get(0).getNickname() + ")"+" "+timeStr);
-                                myName = usn + "(" + us.get(0).getNickname() + ")";
-                            }else{
-                                username.setText(usn+" "+timeStr);
+        try {
+            final ImageView avatar = holder.itemView.findViewById(R.id.avatar);
+            final TextView username = holder.itemView.findViewById(R.id.username);
+            final String usn = messages.get(i).getFrom();
+            final long timestamp = messages.get(i).getTimestamp();
+            final String timeStr = getTimeStr(timestamp);
+            if (getItemViewType(i) < 10) {
+                if (myName == null) {
+                    AVQuery<WxUser> query = new AVQuery<>("WxUser");
+                    query.whereEqualTo("username", usn);
+                    query.findInBackground(new FindCallback<WxUser>() {
+                        @SuppressLint("SetTextI18n")
+                        @Override
+                        public void done(List<WxUser> us, AVException e) {
+                            if (e == null && us.size() > 0) {
+                                if (us.get(0).getNickname() != null) {
+                                    username.setText(usn + "(" + us.get(0).getNickname() + ")" + " " + timeStr);
+                                    myName = usn + "(" + us.get(0).getNickname() + ")";
+                                } else {
+                                    username.setText(usn + " " + timeStr);
+                                    myName = usn;
+                                }
+                            } else {
+                                username.setText(usn + " " + timeStr);
                                 myName = usn;
                             }
-                        } else {
-                            username.setText(usn+" "+timeStr);
-                            myName = usn;
                         }
-                    }
-                });
-            } else {
-                username.setText(myName+" "+timeStr);
-            }
-            if(myAvatar==null){
-                AVQuery<WxUser> query=new AVQuery<>("WxUser");
-                query.whereEqualTo("username",usn);
-                query.findInBackground(new FindCallback<WxUser>() {
-                    @Override
-                    public void done(List<WxUser> users, AVException e) {
-                        if(e==null&&users.size()>0){
-                            String av=users.get(0).getAvatar();
-                            if(av!=null){
-                                ImageLoader.getInstance().loadImage(avatar,av);
-                                myAvatar=av;
+                    });
+                } else {
+                    username.setText(myName + " " + timeStr);
+                }
+                if (myAvatar == null) {
+                    AVQuery<WxUser> query = new AVQuery<>("WxUser");
+                    query.whereEqualTo("username", usn);
+                    query.findInBackground(new FindCallback<WxUser>() {
+                        @Override
+                        public void done(List<WxUser> users, AVException e) {
+                            if (e == null && users.size() > 0) {
+                                String av = users.get(0).getAvatar();
+                                if (av != null) {
+                                    ImageLoader.getInstance().loadImage(avatar, av);
+                                    myAvatar = av;
+                                }
                             }
                         }
-                    }
-                });
-            }else{
-                ImageLoader.getInstance().loadImage(avatar,myAvatar);
-            }
-        }else{
-            if(hisName==null) {
-                AVQuery<WxUser> query = new AVQuery<>("WxUser");
-                query.whereEqualTo("username", usn);
-                query.findInBackground(new FindCallback<WxUser>() {
-                    @SuppressLint("SetTextI18n")
-                    @Override
-                    public void done(List<WxUser> us, AVException e) {
-                        if (e == null && us.size() > 0) {
-                            if (us.get(0).getNickname() != null) {
-                                username.setText(timeStr+" "+usn + "(" + us.get(0).getNickname() + ")");
-                                hisName = usn + "(" + us.get(0).getNickname() + ")";
-                            }else{
-                                username.setText(timeStr+" "+usn);
+                    });
+                } else {
+                    ImageLoader.getInstance().loadImage(avatar, myAvatar);
+                }
+            } else {
+                if (hisName == null) {
+                    AVQuery<WxUser> query = new AVQuery<>("WxUser");
+                    query.whereEqualTo("username", usn);
+                    query.findInBackground(new FindCallback<WxUser>() {
+                        @SuppressLint("SetTextI18n")
+                        @Override
+                        public void done(List<WxUser> us, AVException e) {
+                            if (e == null && us.size() > 0) {
+                                if (us.get(0).getNickname() != null) {
+                                    username.setText(timeStr + " " + usn + "(" + us.get(0).getNickname() + ")");
+                                    hisName = usn + "(" + us.get(0).getNickname() + ")";
+                                } else {
+                                    username.setText(timeStr + " " + usn);
+                                    hisName = usn;
+                                }
+                            } else {
+                                username.setText(timeStr + " " + usn);
                                 hisName = usn;
                             }
-                        } else {
-                            username.setText(timeStr+" "+usn);
-                            hisName = usn;
                         }
-                    }
-                });
-            }else{
-                username.setText(timeStr+" "+hisName);
-            }
-            if(hisAvatar==null){
-                AVQuery<WxUser> query=new AVQuery<>("WxUser");
-                query.whereEqualTo("username",usn);
-                query.findInBackground(new FindCallback<WxUser>() {
-                    @Override
-                    public void done(List<WxUser> users, AVException e) {
-                        if(e==null&&users.size()>0){
-                            String av=users.get(0).getAvatar();
-                            if(av!=null){
-                                ImageLoader.getInstance().loadImage(avatar,av);
-                                hisAvatar=av;
+                    });
+                } else {
+                    username.setText(timeStr + " " + hisName);
+                }
+                if (hisAvatar == null) {
+                    AVQuery<WxUser> query = new AVQuery<>("WxUser");
+                    query.whereEqualTo("username", usn);
+                    query.findInBackground(new FindCallback<WxUser>() {
+                        @Override
+                        public void done(List<WxUser> users, AVException e) {
+                            if (e == null && users.size() > 0) {
+                                String av = users.get(0).getAvatar();
+                                if (av != null) {
+                                    ImageLoader.getInstance().loadImage(avatar, av);
+                                    hisAvatar = av;
+                                }
                             }
                         }
-                    }
-                });
-            }else{
-                ImageLoader.getInstance().loadImage(avatar,hisAvatar);
+                    });
+                } else {
+                    ImageLoader.getInstance().loadImage(avatar, hisAvatar);
+                }
             }
-        }
-        if(getItemViewType(i)==type_me_AVIMTextMessage||getItemViewType(i)==type_other_AVIMTextMessage){
-            String ms=messages.get(i).getContent();
-            String c = null;
-            try {
-                JSONObject jsonObject=new JSONObject(ms);
-                c= (String) jsonObject.get("_lctext");
-            } catch (JSONException e) {
-                e.printStackTrace();
+            if (getItemViewType(i) == type_me_AVIMTextMessage || getItemViewType(i) == type_other_AVIMTextMessage) {
+                String ms = messages.get(i).getContent();
+                String c = null;
+                try {
+                    JSONObject jsonObject = new JSONObject(ms);
+                    c = (String) jsonObject.get("_lctext");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                TextView msg = holder.itemView.findViewById(R.id.msg);
+                msg.setText(c);
+            } else if (getItemViewType(i) == type_me_AVIMImageMessage || getItemViewType(i) == type_other_AVIMImageMessage) {
+                String content = messages.get(i).getContent();
+                String tag = null;
+                String url = null;
+                //TextView view_tag=holder.itemView.findViewById(R.id.tag);
+                ImageView view_image = holder.itemView.findViewById(R.id.image);
+                view_image.setImageResource(R.drawable.default_holder);
+                try {
+                    JSONObject jsonObject = new JSONObject(content);
+                    tag = jsonObject.getString("_lctext");
+                    JSONObject file = jsonObject.getJSONObject("_lcfile");
+                    url = file.getString("url");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                if (tag != null) {
+                    //view_tag.setText("");
+                }
+                if (url != null) {
+                    ImageLoader.getInstance().loadImage(view_image, url);
+                    view_image.setTag("chat_image;" + url);
+                    view_image.setOnClickListener(this);
+                }
+            } else if (getItemViewType(i) == type_me_AVIMAudioMessage || getItemViewType(i) == type_other_AVIMAudioMessage) {
+
+            } else if (getItemViewType(i) == type_me_AVIMVideoMessage || getItemViewType(i) == type_other_AVIMVideoMessage) {
+                VideoPlayerView playerView = holder.itemView.findViewById(R.id.player);
+                String content = messages.get(i).getContent();
+                JSONObject jsonObject = null;
+                try {
+                    jsonObject = new JSONObject(content);
+                    JSONObject jo = jsonObject.getJSONObject("_lcfile");
+                    String url = jo.getString("url");
+                    playerView.initializePlayer(url);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                RelativeLayout wraper=holder.itemView.findViewById(R.id.wraper);
+                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) wraper.getLayoutParams();
+                if (params == null) {
+                    params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                }
+                params.width = RecyclerView.LayoutParams.WRAP_CONTENT;
+                params.height = RecyclerView.LayoutParams.WRAP_CONTENT;
+                wraper.setLayoutParams(params);
+            } else if (getItemViewType(i) == type_me_AVIMLocationMessage || getItemViewType(i) == type_other_AVIMLocationMessage) {
+
+            } else if (getItemViewType(i) == type_me_AVIMFileMessage || getItemViewType(i) == type_other_AVIMFileMessage) {
+
+            } else if (getItemViewType(i) == type_me_AVIMRecalledMessage || getItemViewType(i) == type_other_AVIMRecalledMessage) {
+
             }
-            TextView msg=holder.itemView.findViewById(R.id.msg);
-            msg.setText(c);
-        }else if(getItemViewType(i)==type_me_AVIMImageMessage||getItemViewType(i)==type_other_AVIMImageMessage){
-            String content=messages.get(i).getContent();
-            String tag = null;
-            String url=null;
-            //TextView view_tag=holder.itemView.findViewById(R.id.tag);
-            ImageView view_image=holder.itemView.findViewById(R.id.image);
-            view_image.setImageResource(R.drawable.default_holder);
-            try{
-                JSONObject jsonObject=new JSONObject(content);
-                tag=jsonObject.getString("_lctext");
-                JSONObject file=jsonObject.getJSONObject("_lcfile");
-                url=file.getString("url");
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-            if(tag!=null) {
-                //view_tag.setText("");
-            }
-            if(url!=null){
-                ImageLoader.getInstance().loadImage(view_image,url);
-                view_image.setTag("chat_image;"+url);
-                view_image.setOnClickListener(this);
-            }
-        }else if(getItemViewType(i)==type_me_AVIMAudioMessage||getItemViewType(i)==type_other_AVIMAudioMessage){
-
-        }else if(getItemViewType(i)==type_me_AVIMVideoMessage||getItemViewType(i)==type_other_AVIMVideoMessage){
-
-        }else if(getItemViewType(i)==type_me_AVIMLocationMessage||getItemViewType(i)==type_other_AVIMLocationMessage){
-
-        }else if(getItemViewType(i)==type_me_AVIMFileMessage||getItemViewType(i)==type_other_AVIMFileMessage){
-
-        }else if(getItemViewType(i)==type_me_AVIMRecalledMessage||getItemViewType(i)==type_other_AVIMRecalledMessage){
-
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 

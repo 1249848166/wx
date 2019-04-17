@@ -60,4 +60,5 @@ dependencies {
     implementation 'org.greenrobot:eventbus:3.1.1'
     implementation 'com.jelly:mango:1.1.1'
     implementation 'com.github.zcweng:switch-button:0.0.3@aar'
+    implementation 'com.google.android.exoplayer:exoplayer:2.7.1'
 }

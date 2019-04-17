@@ -32,22 +32,26 @@
             android:layout_height="wrap_content"
             tools:ignore="HardcodedText" />
 
-        <RelativeLayout
+        <LinearLayout
+            android:orientation="vertical"
+            android:background="@drawable/round_chat"
+            android:padding="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/msg"
-                android:layout_alignParentRight="true"
-                android:padding="5dp"
-                android:layout_marginRight="5dp"
-                android:layout_marginTop="5dp"
-                android:background="@drawable/round_chat"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:ignore="HardcodedText" />
+            <com.su.wx.views.VideoPlayerView
+                android:id="@+id/player"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
-        </RelativeLayout>
+            <!--<TextView-->
+                <!--android:id="@+id/tag"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content" />-->
+
+        </LinearLayout>
 
     </LinearLayout>
 
