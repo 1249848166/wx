@@ -25,6 +25,11 @@ import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.SaveCallback;
+import com.scwang.smartrefresh.header.MaterialHeader;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.footer.FalsifyFooter;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.su.wx.R;
 import com.su.wx.activity.LoginActivity;
 import com.su.wx.activity.SetDeviceIdActivity;
@@ -68,6 +73,17 @@ public class WoFragment extends Fragment implements View.OnClickListener {
         View content=null;
         try {
             content = LayoutInflater.from(getContext()).inflate(R.layout.layout_wo, container, false);
+
+            SmartRefreshLayout refresh=content.findViewById(R.id.refresh);
+            refresh.setRefreshHeader(new MaterialHeader(getContext()));
+            refresh.setRefreshFooter(new FalsifyFooter(getContext()));
+            refresh.setOnRefreshListener(new OnRefreshListener() {
+                @Override
+                public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+                    refreshLayout.finishRefresh(500);
+                }
+            });
+
             avatar = content.findViewById(R.id.avatar);
             TextView username = content.findViewById(R.id.username);
             nickname = content.findViewById(R.id.nickname);
@@ -85,11 +101,11 @@ public class WoFragment extends Fragment implements View.OnClickListener {
                 nickname.setText("昵称未设置");
             }
 
-            Button logout = content.findViewById(R.id.logout);
+            View logout = content.findViewById(R.id.logout);
             logout.setOnClickListener(this);
-            Button deviceid = content.findViewById(R.id.deviceid);
+            View deviceid = content.findViewById(R.id.deviceid);
             deviceid.setOnClickListener(this);
-            Button userinfo = content.findViewById(R.id.userinfo);
+            View userinfo = content.findViewById(R.id.userinfo);
             userinfo.setOnClickListener(this);
         }catch (Exception e){
             e.printStackTrace();

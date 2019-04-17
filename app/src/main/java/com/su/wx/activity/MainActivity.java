@@ -20,6 +20,8 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.avos.avoscloud.AVUser;
@@ -60,6 +62,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     Toolbar toolbar;
     View addView,searchView;
 
+    TextView title;
+
     final int CODE_SELECT_FILE=100;
 
     @Override
@@ -81,6 +85,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         searchView=toolbar.findViewById(R.id.search);
         addView.setOnClickListener(this);
         searchView.setOnClickListener(this);
+        title=toolbar.findViewById(R.id.title);
     }
 
     @Override
@@ -115,9 +120,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private void initTopRightMenu() {
         topRightMenu=new TopRightMenu(this);
         List<MenuItem> menuItems = new ArrayList<>();
-        menuItems.add(new MenuItem(R.drawable.wo_light, "添加好友"));
+        menuItems.add(new MenuItem(R.drawable.ic_person_black_24dp, "添加好友"));
         menuItems.add(new MenuItem(R.drawable.ic_group_black_24dp, "发起多人聊天"));
-        topRightMenu.setHeight(180).setWidth(420).showIcon(true).dimBackground(true)
+        topRightMenu.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT)
+                .setWidth(ViewGroup.LayoutParams.WRAP_CONTENT)
+                .showIcon(true).dimBackground(true)
                 .needAnimationStyle(true).setAnimationStyle(R.style.TRM_ANIM_STYLE).addMenuList(menuItems)
                 .setOnMenuItemClickListener(new TopRightMenu.OnMenuItemClickListener() {
                     @Override
@@ -187,6 +194,20 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     }else{
                         tabLayout.getTabAt(i).setIcon(normalIcons[i]);
                     }
+                }
+                switch (tabLayout.getSelectedTabPosition()){
+                    case 0:
+                        title.setText("唯信");
+                        break;
+                    case 1:
+                        title.setText("通讯录");
+                        break;
+                    case 2:
+                        title.setText("发现");
+                        break;
+                    case 3:
+                        title.setText("我");
+                        break;
                 }
             }
 

@@ -31,6 +31,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -143,6 +144,8 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.Holder> implem
         final ImageView avatar=holder.itemView.findViewById(R.id.avatar);
         final TextView username=holder.itemView.findViewById(R.id.username);
         final String usn=messages.get(i).getFrom();
+        final long timestamp=messages.get(i).getTimestamp();
+        final String timeStr=getTimeStr(timestamp);
         if(getItemViewType(i)<10) {
             if (myName == null) {
                 AVQuery<WxUser> query = new AVQuery<>("WxUser");
@@ -153,20 +156,20 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.Holder> implem
                     public void done(List<WxUser> us, AVException e) {
                         if (e == null && us.size() > 0) {
                             if (us.get(0).getNickname() != null) {
-                                username.setText(usn + "(" + us.get(0).getNickname() + ")");
+                                username.setText(usn + "(" + us.get(0).getNickname() + ")"+" "+timeStr);
                                 myName = usn + "(" + us.get(0).getNickname() + ")";
                             }else{
-                                username.setText(usn);
+                                username.setText(usn+" "+timeStr);
                                 myName = usn;
                             }
                         } else {
-                            username.setText(usn);
+                            username.setText(usn+" "+timeStr);
                             myName = usn;
                         }
                     }
                 });
             } else {
-                username.setText(myName);
+                username.setText(myName+" "+timeStr);
             }
             if(myAvatar==null){
                 AVQuery<WxUser> query=new AVQuery<>("WxUser");
@@ -196,20 +199,20 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.Holder> implem
                     public void done(List<WxUser> us, AVException e) {
                         if (e == null && us.size() > 0) {
                             if (us.get(0).getNickname() != null) {
-                                username.setText(usn + "(" + us.get(0).getNickname() + ")");
+                                username.setText(timeStr+" "+usn + "(" + us.get(0).getNickname() + ")");
                                 hisName = usn + "(" + us.get(0).getNickname() + ")";
                             }else{
-                                username.setText(usn);
+                                username.setText(timeStr+" "+usn);
                                 hisName = usn;
                             }
                         } else {
-                            username.setText(usn);
+                            username.setText(timeStr+" "+usn);
                             hisName = usn;
                         }
                     }
                 });
             }else{
-                username.setText(hisName);
+                username.setText(timeStr+" "+hisName);
             }
             if(hisAvatar==null){
                 AVQuery<WxUser> query=new AVQuery<>("WxUser");
@@ -275,6 +278,11 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.Holder> implem
         }else if(getItemViewType(i)==type_me_AVIMRecalledMessage||getItemViewType(i)==type_other_AVIMRecalledMessage){
 
         }
+    }
+
+    private String getTimeStr(long timestamp) {
+        SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return simpleDateFormat.format(timestamp);
     }
 
     @Override

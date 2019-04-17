@@ -6,8 +6,11 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v4.app.ActivityCompat;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 
 import java.security.MessageDigest;
 import java.util.List;
@@ -73,5 +76,14 @@ public class DeviceUtil {
         } else {
             return null;
         }
+    }
+
+    //判断是否有联网
+    @SuppressLint("NewApi")
+    public static boolean isNetworkConnected(Context context) {
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getApplicationContext()
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo info=connectivityManager.getActiveNetworkInfo();
+        return info != null;
     }
 }

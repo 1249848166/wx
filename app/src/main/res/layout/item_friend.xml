@@ -11,10 +11,9 @@
     <ImageView
         android:id="@+id/avatar"
         android:src="@drawable/head_hold"
-        android:padding="5dp"
         android:scaleType="centerCrop"
-        android:layout_width="50dp"
-        android:layout_height="50dp" />
+        android:layout_width="40dp"
+        android:layout_height="40dp" />
 
     <TextView
         android:id="@+id/username"

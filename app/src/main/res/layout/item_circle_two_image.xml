@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp"
+    android:background="@color/white"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/head"
+        android:src="@drawable/head_hold"
+        android:layout_width="50dp"
+        android:layout_height="50dp" />
+
+    <TextView
+        android:id="@+id/username"
+        android:textSize="16sp"
+        android:text="用户名"
+        android:layout_toRightOf="@+id/head"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="10dp"
+        android:textColor="@color/blue"
+        android:textStyle="bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/text"
+        android:layout_toRightOf="@+id/head"
+        android:layout_below="@+id/username"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:textSize="14sp"
+        android:text="今天天气晴朗，风和日丽，我突然好想发一个动态，来表示我现在的心情。。。总之，只是突然心血来潮而已。。。"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:id="@+id/wrap"
+        android:layout_below="@+id/text"
+        android:layout_toRightOf="@+id/head"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.su.wx.views.AutoFitWidthImageView
+            android:id="@+id/image1"
+            android:src="@drawable/default_holder"
+            android:scaleType="centerCrop"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content" />
+
+        <com.su.wx.views.AutoFitWidthImageView
+            android:id="@+id/image2"
+            android:src="@drawable/default_holder"
+            android:scaleType="centerCrop"
+            android:layout_marginLeft="5dp"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/time"
+        android:text="2019-04-10 15:33:45"
+        android:layout_below="@+id/wrap"
+        android:layout_toRightOf="@+id/head"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:textSize="14sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+</RelativeLayout>

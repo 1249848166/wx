@@ -10,6 +10,7 @@ import com.avos.avoscloud.im.v2.AVIMMessageManager;
 import com.su.wx.core.Core;
 import com.su.wx.im.CustomConversationHandler;
 import com.su.wx.im.CustomMessageHandler;
+import com.su.wx.models.Circle;
 import com.su.wx.models.Friend;
 import com.su.wx.models.WxUser;
 
@@ -22,6 +23,7 @@ public class BaseApp extends Application {
 
         AVObject.registerSubclass(WxUser.class);
         AVObject.registerSubclass(Friend.class);
+        AVObject.registerSubclass(Circle.class);
 
         AVOSCloud.initialize(this,Core.getAppId(),Core.getClientKey());
         AVOSCloud.setDebugLogEnabled(true);

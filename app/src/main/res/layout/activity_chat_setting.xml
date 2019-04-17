@@ -22,8 +22,16 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <ImageView
+                android:id="@+id/arrow"
+                android:src="@drawable/previewleft"
+                android:layout_marginLeft="10dp"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                tools:ignore="RtlHardcoded" />
+
             <TextView
-                android:layout_marginLeft="15dp"
+                android:layout_marginLeft="8dp"
                 android:textColor="@color/black"
                 android:text="聊天设置"
                 android:textSize="18sp"

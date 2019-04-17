@@ -5,34 +5,33 @@
 
     <!-- 基础模块（必须加入以下声明）START -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <!-- 基础模块 END -->
     <application
         android:name=".app.BaseApp"
         android:allowBackup="true"
-        android:icon="@drawable/weixin_light"
+        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@drawable/wechat"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning,UnusedAttribute">
-
         <provider
-            android:authorities="com.su.wx.fileprovider"
             android:name="android.support.v4.content.FileProvider"
-            android:grantUriPermissions="true"
-            android:exported="false">
+            android:authorities="com.su.wx.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/filepaths"/>
+                android:resource="@xml/filepaths" />
         </provider>
 
         <!-- 即时通讯模块、推送（均需要加入以下声明） START -->
@@ -67,10 +66,10 @@
             android:name=".activity.MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/NoTitle" />
-        <activity android:name=".activity.LoginActivity"
+        <activity
+            android:name=".activity.LoginActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/NoTitle"
-            />
+            android:theme="@style/NoTitle" />
         <activity
             android:name=".activity.ChatActivity"
             android:screenOrientation="portrait"
@@ -84,24 +83,46 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.SetDeviceIdActivity"
-            android:theme="@style/NoTitle"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/NoTitle" />
         <activity
             android:name=".activity.VerifyDeviceIdActivity"
-            android:theme="@style/NoTitle"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/NoTitle" />
         <activity
             android:name=".activity.UserinfoSettingActivity"
-            android:theme="@style/NoTitle"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/NoTitle" />
         <activity
             android:name=".activity.ChatSettingActivity"
-            android:theme="@style/NoTitle"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/NoTitle" />
         <activity android:name=".activity.PermissionActivity" />
-        <activity android:name=".activity.ConversationVerifyDeviceIdActivity"
-            android:theme="@style/NoTitle"
-            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".activity.ConversationVerifyDeviceIdActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/NoTitle" />
+
+        <receiver
+            android:name=".receiver.NetworkStateReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter android:priority="1000">
+                <action
+                    android:name="android.net.conn.CONNECTIVITY_CHANGE"
+                    tools:ignore="BatteryLife" />
+                <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
+                <action android:name="android.net.wifi.STATE_CHANGE" />
+            </intent-filter>
+        </receiver>
+
+        <activity
+            android:name=".activity.CircleActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/NoTitle" />
+        <activity android:name=".activity.WriteCircleActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/NoTitle"/>
     </application>
 
 </manifest>

@@ -338,6 +338,7 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener {
                         int origin = messages.size();
                         messages.add(msg);
                         adapter.notifyItemInserted(origin);
+                        recycler.smoothScrollToPosition(messages.size()-1);
                         //给自己发送刷新会话列表事件
                         Log.e("给自己发送刷新会话列表事件", "发送开始");
                         EventBus.getDefault().post(new ConversationAdapterRefreshEvent(conversation.getConversationId()));
@@ -540,5 +541,6 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener {
         int origin = messages.size();
         messages.add(event.getMsg());
         adapter.notifyItemRangeInserted(origin, messages.size());
+        recycler.smoothScrollToPosition(messages.size()-1);
     }
 }

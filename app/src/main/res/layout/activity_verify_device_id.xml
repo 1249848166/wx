@@ -19,10 +19,19 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <ImageView
+                android:id="@+id/arrow"
+                android:src="@drawable/previewleft"
+                android:layout_marginLeft="10dp"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                tools:ignore="RtlHardcoded" />
+
             <TextView
+                android:layout_toRightOf="@+id/arrow"
                 android:text="设置唯一设备ID"
                 android:textSize="19sp"
-                android:layout_marginLeft="15dp"
+                android:layout_marginLeft="8dp"
                 android:textColor="@color/black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />

@@ -4,15 +4,16 @@
     android:orientation="horizontal"
     android:gravity="center_vertical"
     android:background="@color/white"
-    android:padding="5dp"
+    android:padding="10dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <ImageView
         android:id="@+id/avatar"
-        android:padding="5dp"
-        android:layout_width="50dp"
-        android:layout_height="50dp" />
+        android:layout_marginLeft="10dp"
+        android:scaleType="centerCrop"
+        android:layout_width="35dp"
+        android:layout_height="35dp" />
 
     <TextView
         android:id="@+id/username"
