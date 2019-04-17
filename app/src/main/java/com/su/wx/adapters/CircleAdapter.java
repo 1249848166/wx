@@ -269,6 +269,7 @@ public class CircleAdapter extends RecyclerView.Adapter<CircleAdapter.Holder> im
             }
         }else if(tag.startsWith("head")){
             //点击头像，进入用户详情页
+
         }
     }
 

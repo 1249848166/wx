@@ -1,5 +1,6 @@
 package com.su.wx.activity;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Environment;
@@ -55,6 +56,8 @@ public class WriteCircleActivity extends BaseActivity implements View.OnClickLis
 
     List<AVFile> imageUrls=new ArrayList<>();
 
+    ProgressDialog dialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,6 +86,9 @@ public class WriteCircleActivity extends BaseActivity implements View.OnClickLis
         imageUrls.add(null);
         imageUrls.add(null);
         imageUrls.add(null);
+
+        dialog=new ProgressDialog(this);
+        dialog.setCancelable(false);
     }
 
     @Override
@@ -93,14 +99,24 @@ public class WriteCircleActivity extends BaseActivity implements View.OnClickLis
                 startActivityForResult(intent1, CODE_SELECT_IMAGE1);
                 break;
             case R.id.image2:
+                if(imageUrls.get(0)==null){
+                    Toast.makeText(this, "请先上传第一张图片", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 Intent intent2 = getGalleryIntent(new Intent());
                 startActivityForResult(intent2, CODE_SELECT_IMAGE2);
                 break;
             case R.id.image3:
+                if(imageUrls.get(0)==null||imageUrls.get(1)==null){
+                    Toast.makeText(this, "请先上传前两张图片", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 Intent intent3 = getGalleryIntent(new Intent());
                 startActivityForResult(intent3, CODE_SELECT_IMAGE3);
                 break;
             case R.id.delete1:
+                dialog.setMessage("正在删除，请稍后");
+                dialog.show();
                 imageUrls.get(0).deleteInBackground(new DeleteCallback() {
                     @Override
                     public void done(AVException e) {
@@ -109,13 +125,32 @@ public class WriteCircleActivity extends BaseActivity implements View.OnClickLis
                         }else{
                             Toast.makeText(WriteCircleActivity.this, "删除失败", Toast.LENGTH_SHORT).show();
                         }
+                        dialog.dismiss();
                     }
                 });
-                imageUrls.set(0,null);
-                image1.setImageResource(R.drawable.default_holder);
-                delete1.setVisibility(View.GONE);
+                imageUrls.set(0,imageUrls.get(1));
+                imageUrls.set(1,imageUrls.get(2));
+                imageUrls.set(2,null);
+                if(imageUrls.get(0)!=null){
+                    ImageLoader.getInstance().loadImage(image1,imageUrls.get(0).getUrl());
+                    delete1.setVisibility(View.VISIBLE);
+                }else {
+                    image1.setImageResource(R.drawable.default_holder);
+                    delete1.setVisibility(View.GONE);
+                }
+                if(imageUrls.get(1)!=null){
+                    ImageLoader.getInstance().loadImage(image2,imageUrls.get(1).getUrl());
+                    delete2.setVisibility(View.VISIBLE);
+                }else {
+                    image2.setImageResource(R.drawable.default_holder);
+                    delete2.setVisibility(View.GONE);
+                }
+                image3.setImageResource(R.drawable.default_holder);
+                delete3.setVisibility(View.GONE);
                 break;
             case R.id.delete2:
+                dialog.setMessage("正在删除，请稍后");
+                dialog.show();
                 imageUrls.get(1).deleteInBackground(new DeleteCallback() {
                     @Override
                     public void done(AVException e) {
@@ -124,13 +159,24 @@ public class WriteCircleActivity extends BaseActivity implements View.OnClickLis
                         }else{
                             Toast.makeText(WriteCircleActivity.this, "删除失败", Toast.LENGTH_SHORT).show();
                         }
+                        dialog.dismiss();
                     }
                 });
-                imageUrls.set(1,null);
-                image2.setImageResource(R.drawable.default_holder);
-                delete2.setVisibility(View.GONE);
+                imageUrls.set(1,imageUrls.get(2));
+                imageUrls.set(2,null);
+                if(imageUrls.get(1)!=null){
+                    ImageLoader.getInstance().loadImage(image2,imageUrls.get(1).getUrl());
+                    delete2.setVisibility(View.VISIBLE);
+                }else {
+                    image2.setImageResource(R.drawable.default_holder);
+                    delete2.setVisibility(View.GONE);
+                }
+                image3.setImageResource(R.drawable.default_holder);
+                delete3.setVisibility(View.GONE);
                 break;
             case R.id.delete3:
+                dialog.setMessage("正在删除，请稍后");
+                dialog.show();
                 imageUrls.get(2).deleteInBackground(new DeleteCallback() {
                     @Override
                     public void done(AVException e) {
@@ -139,6 +185,7 @@ public class WriteCircleActivity extends BaseActivity implements View.OnClickLis
                         }else{
                             Toast.makeText(WriteCircleActivity.this, "删除失败", Toast.LENGTH_SHORT).show();
                         }
+                        dialog.dismiss();
                     }
                 });
                 imageUrls.set(2,null);
@@ -243,6 +290,8 @@ public class WriteCircleActivity extends BaseActivity implements View.OnClickLis
     protected void onActivityResult(final int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
+            dialog.setMessage("正在上传，请稍后");
+            dialog.show();
             String filePath = getPath(this, data.getData());
             File f = new File(filePath);
             if (f.exists()) {
@@ -281,6 +330,7 @@ public class WriteCircleActivity extends BaseActivity implements View.OnClickLis
                                                 }else{
                                                     Toast.makeText(WriteCircleActivity.this, "图片上传失败", Toast.LENGTH_SHORT).show();
                                                 }
+                                                dialog.dismiss();
                                             }
                                         });
                                     } catch (FileNotFoundException e) {
@@ -317,6 +367,7 @@ public class WriteCircleActivity extends BaseActivity implements View.OnClickLis
                             }else{
                                 Toast.makeText(WriteCircleActivity.this, "图片上传失败", Toast.LENGTH_SHORT).show();
                             }
+                            dialog.dismiss();
                         }
                     });
                 } catch (FileNotFoundException e) {

@@ -120,9 +120,11 @@
             android:name=".activity.CircleActivity"
             android:screenOrientation="portrait"
             android:theme="@style/NoTitle" />
-        <activity android:name=".activity.WriteCircleActivity"
+        <activity
+            android:name=".activity.WriteCircleActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/NoTitle"/>
+            android:theme="@style/NoTitle" />
+        <activity android:name=".activity.UserInfoActivity"></activity>
     </application>
 
 </manifest>
